@@ -43,7 +43,7 @@ extern kthread_runqueue_t *ksched_find_target(uthread_struct_t *);
 
 /**********************************************************************/
 /* gtthread application (over kthreads and uthreads) */
-static void gtthread_app_start(void *arg);
+static void gtthread_app_start(void* arg);  // * why void??
 
 /**********************************************************************/
 /* kthread creation */
@@ -237,9 +237,9 @@ static void ksched_priority(int signo)
 	kthread_context_t *cur_k_ctx, *tmp_k_ctx;
 	pid_t pid;
 	int inx;
-
-	// kthread_block_signal(SIGVTALRM);
-	// kthread_block_signal(SIGUSR1);
+	// *Block
+	//kthread_block_signal(SIGVTALRM);
+	//kthread_block_signal(SIGUSR1);
 
 	ksched_announce_cosched_group();
 
@@ -259,11 +259,11 @@ static void ksched_priority(int signo)
 			syscall(__NR_tkill, tmp_k_ctx->tid, SIGUSR1);
 		}
 	}
-
+	
 	uthread_schedule(&sched_find_best_uthread);
 
-	// kthread_unblock_signal(SIGVTALRM);
-	// kthread_unblock_signal(SIGUSR1);
+	//kthread_unblock_signal(SIGVTALRM);
+	//kthread_unblock_signal(SIGUSR1);
 	return;
 }
 
@@ -273,7 +273,7 @@ static void ksched_priority(int signo)
  * All application cleanup must be done at the end of this function. */
 extern unsigned int gtthread_app_running;
 
-static void gtthread_app_start(void *arg)
+static void gtthread_app_start(void* arg)  // * why void?
 {
 	kthread_context_t *k_ctx;
 
@@ -364,6 +364,9 @@ yield_again:
 	/* app-func is called for main in gthread_app_exit */
 	k_ctx_main->kthread_app_func(NULL);
 #endif
+	// ** Change
+	kthread_block_signal(SIGVTALRM);
+	kthread_block_signal(SIGUSR1);
 	return;
 }
 
@@ -371,23 +374,30 @@ extern void gtthread_app_exit()
 {
 	/* gtthread_app_exit called by only main thread. */
 	/* For main thread, trigger start again. */
+	static int count = 0;
 	kthread_context_t *k_ctx;
 
 	k_ctx = kthread_cpu_map[kthread_apic_id()];
 	k_ctx->kthread_flags &= ~KTHREAD_DONE;
-
+#if 1
 	while(!(k_ctx->kthread_flags & KTHREAD_DONE))
 	{
 		__asm__ __volatile__ ("pause\n");
+		// ** UNBLOCK
+		kthread_unblock_signal(SIGVTALRM);
+		kthread_unblock_signal(SIGUSR1);
 		if(sigsetjmp(k_ctx->kthread_env, 0))
 		{
 			/* siglongjmp to this point is done when there
-			 * are no more uthreads to schedule.*/
+			 * are no more uthreads to schedule.
 			/* XXX: gtthread app cleanup has to be done. */
+			//printf("akthreadflag:%d\n", k_ctx->kthread_flags);
+			count++;
 			continue;
 		}
 		uthread_schedule(&sched_find_best_uthread);
 	}
+#endif
 
 	kthread_block_signal(SIGVTALRM);
 	kthread_block_signal(SIGUSR1);
@@ -397,6 +407,7 @@ extern void gtthread_app_exit()
 		/* Main thread has to wait for other kthreads */
 		__asm__ __volatile__ ("pause\n");
 	}
+	//printf("circle:%d\n", count);
 	return;	
 }
 

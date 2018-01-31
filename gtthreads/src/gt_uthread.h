@@ -1,6 +1,12 @@
 #ifndef __GT_UTHREAD_H
 #define __GT_UTHREAD_H
 
+// ** Headers added
+#include <time.h>      
+#include <setjmp.h>   
+#include <ucontext.h>
+#include <signal.h>
+
 /* User-level thread implementation (using alternate signal stacks) */
 
 typedef unsigned int uthread_t;
@@ -12,6 +18,10 @@ typedef unsigned int uthread_group_t;
 #define UTHREAD_RUNNING 0x04
 #define UTHREAD_CANCELLED 0x08
 #define UTHREAD_DONE 0x10
+
+// ** Scheduler Mode
+#define CREDIT_SCHED 0x16
+#define DEFAULT_SCHED 0x32
 
 /* uthread struct : has all the uthread context info */
 typedef struct uthread_struct
@@ -31,6 +41,17 @@ typedef struct uthread_struct
 	int reserved1;
 	int reserved2;
 	int reserved3;
+
+	// ** Credit Scheduler Arguments
+	int sched_mode;
+	int credits;
+	int credits_set;
+	int size;
+	// **
+
+	// ** Time
+	struct timeval create_time, vanish_time, cpu_time_1, cpu_time_2;
+	unsigned long cpu_time, thread_life;
 	
 	sigjmp_buf uthread_env; /* 156 bytes : save user-level thread context*/
 	stack_t uthread_stack; /* 12 bytes : user-level thread stack */

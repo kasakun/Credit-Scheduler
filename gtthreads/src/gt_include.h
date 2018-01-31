@@ -10,4 +10,7 @@
 #include "gt_pq.h"
 #include "gt_kthread.h"
 
+#include "gt_credit_sched.h"
+#include "gt_stats.h"
+
 #endif
