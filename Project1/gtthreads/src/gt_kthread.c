@@ -407,6 +407,7 @@ extern void gtthread_app_exit()
 		/* Main thread has to wait for other kthreads */
 		__asm__ __volatile__ ("pause\n");
 	}
+	ksched_shared_info.init = 1;
 	//printf("circle:%d\n", count);
 	return;	
 }

@@ -13,6 +13,7 @@ typedef unsigned int kthread_t;
 
 /* kthread flags */
 #define KTHREAD_DONE 0x01 /* Done scheduling. Don't relay signal to this kthread. */
+#define KTHREAD_INIT 0X02
 
 typedef struct __kthread_context
 {
@@ -61,6 +62,10 @@ typedef struct __ksched_shared_info
 
 	gt_spinlock_t __malloc_lock; /* making malloc thread-safe (check particular glibc to see if needed) */
 	unsigned int reserved[2];
+
+	//** 
+	unsigned int sched_mode;
+	unsigned int init;
 } ksched_shared_info_t;
 
 

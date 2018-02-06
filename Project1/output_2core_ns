@@ -1,0 +1,69 @@
+====================================================================
+====================================================================
+Group:1, credits:25, size:256
+Mean Execution Time: 170.699750ms, Standard:84.778671ms
+Mean Thread Life Time: 3616.395500ms, Standard:1425.761089ms
+--------------------------------------------------------------------
+Group:2, credits:50, size:256
+Mean Execution Time: 103.009750ms, Standard:89.698373ms
+Mean Thread Life Time: 3053.638125ms, Standard:290.089441ms
+--------------------------------------------------------------------
+Group:3, credits:75, size:256
+Mean Execution Time: 161.121500ms, Standard:48.131673ms
+Mean Thread Life Time: 1982.423875ms, Standard:349.994315ms
+--------------------------------------------------------------------
+Group:4, credits:100, size:256
+Mean Execution Time: 161.339750ms, Standard:63.117229ms
+Mean Thread Life Time: 838.109375ms, Standard:378.388553ms
+--------------------------------------------------------------------
+Group:5, credits:25, size:128
+Mean Execution Time: 20.277000ms, Standard:13.528375ms
+Mean Thread Life Time: 3893.142500ms, Standard:367.904581ms
+--------------------------------------------------------------------
+Group:6, credits:50, size:128
+Mean Execution Time: 19.244375ms, Standard:10.034631ms
+Mean Thread Life Time: 3002.523125ms, Standard:301.575780ms
+--------------------------------------------------------------------
+Group:7, credits:75, size:128
+Mean Execution Time: 27.862750ms, Standard:12.397845ms
+Mean Thread Life Time: 1870.885875ms, Standard:326.332625ms
+--------------------------------------------------------------------
+Group:8, credits:100, size:128
+Mean Execution Time: 24.559500ms, Standard:7.815476ms
+Mean Thread Life Time: 703.260125ms, Standard:355.863045ms
+--------------------------------------------------------------------
+Group:9, credits:25, size:64
+Mean Execution Time: 2.987125ms, Standard:3.023834ms
+Mean Thread Life Time: 3811.352250ms, Standard:312.679729ms
+--------------------------------------------------------------------
+Group:10, credits:50, size:64
+Mean Execution Time: 2.076875ms, Standard:0.923841ms
+Mean Thread Life Time: 2988.120625ms, Standard:299.880027ms
+--------------------------------------------------------------------
+Group:11, credits:75, size:64
+Mean Execution Time: 2.700500ms, Standard:2.806855ms
+Mean Thread Life Time: 1857.013625ms, Standard:328.540527ms
+--------------------------------------------------------------------
+Group:12, credits:100, size:64
+Mean Execution Time: 5.001750ms, Standard:6.424405ms
+Mean Thread Life Time: 692.674250ms, Standard:360.730169ms
+--------------------------------------------------------------------
+Group:13, credits:25, size:32
+Mean Execution Time: 0.220625ms, Standard:0.088010ms
+Mean Thread Life Time: 3795.674250ms, Standard:316.786138ms
+--------------------------------------------------------------------
+Group:14, credits:50, size:32
+Mean Execution Time: 0.228500ms, Standard:0.084991ms
+Mean Thread Life Time: 2976.492000ms, Standard:299.882314ms
+--------------------------------------------------------------------
+Group:15, credits:75, size:32
+Mean Execution Time: 0.233375ms, Standard:0.094353ms
+Mean Thread Life Time: 1845.409250ms, Standard:328.574947ms
+--------------------------------------------------------------------
+Group:16, credits:100, size:32
+Mean Execution Time: 0.227125ms, Standard:0.092906ms
+Mean Thread Life Time: 681.050750ms, Standard:360.811760ms
+--------------------------------------------------------------------
+====================================================================
+====================================================================
+

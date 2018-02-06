@@ -21,7 +21,7 @@
 #define NUM_THREADS 128    // ** Changed to 128 threads
 #define PER_THREAD_ROWS (SIZE/NUM_THREADS)
 
-#define NUM_CPUS 2         // ** Assign different work to the core
+#define NUM_CPUS 4         // ** Assign different work to the core
 #define NUM_GROUPS NUM_CPUS
 #define PER_GROUP (SIZE/NUM_GROUPS)
 
@@ -172,13 +172,32 @@ void resize(int thread_id, int* size) // ** Size Modification
 uthread_arg_t uargs[NUM_THREADS];
 uthread_t utids[NUM_THREADS];
 
-int main()
+int main(int argc, char *argv[])
 {
 	uthread_arg_t *uarg;// * Point to lists of u_arg
 	unsigned int inx;            // * Thread_id
+	int mode;
 	matrix_t A, B;
 	generate_matrix(&A, 1);
 	generate_matrix(&B, 1);
+
+	if(argc != 2) {
+		printf("Wrong input! Should be matrix [para], 0 for default, 1 for credits!\n");
+		return;
+	}
+
+	if (*argv[1] == '1') {
+		printf("Credit Scheduler\n");
+		mode = CREDIT_SCHED;
+	}
+	else if (*argv[1] == '0') {
+		printf("Priority Scheduler");
+		mode = DEFAULT_SCHED;
+	}
+	else {
+		printf("Must pass a 0 or 1! 0 for priority, 1 for credit!\n");
+		return;
+	}
 
 	gtthread_app_init();
 	// printf("Initialize complete\n");
@@ -205,7 +224,7 @@ int main()
 		uarg->start_col = 0;
 		uarg->end_col = size;
 
-		uarg->sched_mode = CREDIT_SCHED;
+		uarg->sched_mode = mode;
 		//uarg->sched_mode = DEFAULT_SCHED;
 		uarg->credits = credits_init(inx);
 

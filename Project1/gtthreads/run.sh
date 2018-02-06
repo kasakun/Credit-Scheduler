@@ -4,4 +4,4 @@ make clean
 make
 make matrix
 rm log.txt
-./bin/matrix
+./bin/matrix 1

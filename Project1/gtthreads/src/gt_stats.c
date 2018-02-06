@@ -113,8 +113,8 @@ extern void print_result(uthread_time_t*head){
 
 	printf("====================================================================\n");
 	printf("====================================================================\n");
-
-	for (int i = 0, j = 0; i < TH_NUM; i += TH_NUM/GROUP) {
+	int i = 0, j = 0;
+	for (i = 0, j = 0; i < TH_NUM; i += TH_NUM/GROUP) {
 		cpu_mean = cpu_time_mean(ptr, TH_NUM/GROUP);
 		cpu_standard = cpu_time_standard(ptr, TH_NUM/GROUP);
 		

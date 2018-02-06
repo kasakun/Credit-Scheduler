@@ -11,7 +11,7 @@
 #include <assert.h>
 
 #include "gt_include.h"
-
+#define NUM_CPUS 4
 
 /**********************************************************************/
 /* runqueue operations */
@@ -189,6 +189,43 @@ extern uthread_struct_t *sched_find_best_uthread(kthread_runqueue_t *kthread_run
 	kthread_runq->kthread_runqlock.holder = 0x04;
 	if(!(runq->uthread_mask))
 	{ /* No jobs in active. switch runqueue */
+		// ** work conserving
+		gt_spin_unlock(&(kthread_runq->kthread_runqlock));
+		if (ksched_shared_info.sched_mode == CREDIT_SCHED && ksched_shared_info.sched_mode == 1) {
+			unsigned int i;
+
+			kthread_runqueue_t *active_k_runq; // Running Kthread
+			runqueue_t *active_runq;
+			kthread_context_t *cur_k_ctx, *active_k_ctx;
+			cur_k_ctx = kthread_cpu_map[kthread_apic_id()];
+			for (i = 0;i < NUM_CPUS; ++i) { // Check other active kthread
+				if (i == cur_k_ctx->cpuid)  // Skip itself
+					continue;
+				active_k_ctx = kthread_cpu_map[i];
+				active_k_runq = &(active_k_ctx->krunqueue);
+				gt_spin_lock(&(kthread_runq->kthread_runqlock));
+				active_runq = active_k_runq->active_runq;
+				if (!(active_runq->uthread_mask)) {
+					gt_spin_unlock(&(active_k_runq->kthread_runqlock));
+					break;
+				}
+				else {
+					uprio = LOWEST_BIT_SET(active_runq->uthread_mask);
+					prioq = &(active_runq->prio_array[uprio]);
+
+					assert(prioq->group_mask);
+					ugroup = LOWEST_BIT_SET(prioq->group_mask);
+
+					u_head = &(prioq->group[ugroup]);
+					u_obj = TAILQ_FIRST(u_head);
+					__rem_from_runqueue(active_runq, u_obj);
+
+					gt_spin_unlock(&(active_k_runq->kthread_runqlock));
+					return(u_obj);
+				}
+			}
+		}
+		// **
 		assert(!runq->uthread_tot);
 		kthread_runq->active_runq = kthread_runq->expires_runq;
 		kthread_runq->expires_runq = runq;

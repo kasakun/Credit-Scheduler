@@ -13,7 +13,9 @@
 #include "gt_include.h"
 
 // ** DEBUG
-#define DEBUG 0
+#define DEBUG 1
+// ** CREDIT BURN
+#define BURN_CREDIT 25
 /**********************************************************************/
 /** DECLARATIONS **/
 /**********************************************************************/
@@ -175,7 +177,7 @@ extern void uthread_schedule(uthread_struct_t * (*kthread_best_sched_uthread)(kt
 			gettimeofday(&u_obj->cpu_time_2, NULL);
 			u_obj->cpu_time = (u_obj->cpu_time_2.tv_sec - u_obj->cpu_time_1.tv_sec)*1000000 + u_obj->cpu_time_2.tv_usec - u_obj->cpu_time_1.tv_usec;
 			if (u_obj->sched_mode == CREDIT_SCHED) {			
-				u_obj->credits -= 25;
+				u_obj->credits -= BURN_CREDIT;
 				if (u_obj->credits > 0) {
 					add_to_runqueue(kthread_runq->active_runq, &(kthread_runq->kthread_runqlock), u_obj);
 					#if DEBUG
@@ -298,6 +300,7 @@ extern int uthread_create(uthread_t *u_tid, int (*u_func)(void *), void *u_arg, 
 {
 	kthread_runqueue_t *kthread_runq;
 	uthread_struct_t *u_new;
+	unsigned int pri;
 
 	/* Signals used for cpu_thread scheduling */
 	// kthread_block_signal(SIGVTALRM);
@@ -311,7 +314,10 @@ extern int uthread_create(uthread_t *u_tid, int (*u_func)(void *), void *u_arg, 
 	}
 	gettimeofday(&u_new->create_time, NULL);
 	u_new->uthread_state = UTHREAD_INIT;
-	u_new->uthread_priority = DEFAULT_UTHREAD_PRIORITY;
+	
+	pri = (credits == 100) ? 0 : ((credits == 75) ? 4 : ((credits == 50) ? 8 : ((credits == 25) ? 16: -1)));
+	
+	u_new->uthread_priority = sched_mode == CREDIT_SCHED ? pri : DEFAULT_UTHREAD_PRIORITY;
 	u_new->uthread_gid = u_gid;
 	u_new->uthread_func = u_func;
 	u_new->uthread_arg = u_arg;
@@ -362,6 +368,12 @@ extern int uthread_create(uthread_t *u_tid, int (*u_func)(void *), void *u_arg, 
 	// kthread_unblock_signal(SIGUSR1);
 
 	return 0;
+}
+
+// ** Yield()
+extern void gt_yield() {
+	uthread_schedule(&sched_find_best_uthread);
+	return;
 }
 
 #if 0
