@@ -1,3 +1,4 @@
+<<<<<<< HEAD
                    CS 6210: Advanced Operating Systems
                 Project 1: Thread Scheduling with GTThreads
                     due: Sunday Feb. 04, 2018 @ 11:59pm
@@ -180,3 +181,7 @@ Submissions received more than 5 days late will receive no credit.
 
 Please see the submission practice document on how to submit your code. Include
 all reports, Makefile, etc., in the top directory.
+=======
+# Credit-Scheduler
+A priority based threads scheduler
+>>>>>>> 82808d271e022fcd33667f12d7519f817b78352d
